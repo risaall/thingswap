@@ -7,3 +7,6 @@ use App\Http\Controllers\TransactionController;
 Route::get('/users', [UserController::class, 'index'])->name('users.index');
 Route::get('/items', [ItemController::class, 'index'])->name('items.index');
 Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
+Route::get('/', function () {
+    return view('welcome');
+});
