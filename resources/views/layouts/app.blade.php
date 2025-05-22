@@ -9,17 +9,19 @@
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">GreenSwap</a>
+        <a class="navbar-brand" href="#">ThingSwap</a>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('users.index') }}">Pengguna</a>
+                    <a class="nav-link" href="{{ route('users.index') }}">Users</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('items.index') }}">Barang</a>
+                    <a class="nav-link" href="{{ route('products.index') }}">Products</a>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('categories.index') }}">Categories</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('transactions.index') }}">Transaksi</a>
+                    <a class="nav-link" href="{{ route('transactions.index') }}">Transaction</a>
                 </li>
             </ul>
         </div>

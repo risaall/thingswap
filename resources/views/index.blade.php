@@ -67,19 +67,14 @@
   <div class="container">
     <h2>Barang Tersedia</h2>
     <div class="produk-list">
-      <div class="produk-item">
-        <img src="img/barang1.jpg" alt="Barang 1">
-        <h3>Meja Belajar</h3>
-        <p>Rp 150.000</p>
-        <a href="#" class="btn">Beli Sekarang</a>
-      </div>
-      <div class="produk-item">
-        <img src="img/barang2.jpg" alt="Barang 2">
-        <h3>Sepeda Bekas</h3>
-        <p>Rp 300.000</p>
-        <a href="#" class="btn">Beli Sekarang</a>
-      </div>
-      <!-- Tambahkan produk lainnya -->
+      @foreach ($products as $product)
+        <div class="produk-item">
+          <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}">
+          <h3>{{ $product->name }}</h3>
+          <p>Rp {{ number_format($product->price, 0, ',', '.') }}</p>
+          <a href="#" class="btn">Beli Sekarang</a>
+        </div>
+      @endforeach
     </div>
   </div>
 </section>
