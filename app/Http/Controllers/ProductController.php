@@ -19,10 +19,10 @@ class ProductController extends Controller
     }
 
     public function showProducts()
-{
-    $products = \App\Models\Product::all();
-    return view('user.produk', compact('products'));
-}
+    {
+        $products = Product::with('category')->latest()->get(); // tambah eager loading
+        return view('user.produk', compact('products'));
+    }
 
     public function create()
     {
@@ -35,18 +35,24 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+        // Bersihkan titik dari harga sebelum validasi
+        $request->merge([
+            'price' => str_replace('.', '', $request->price),
+        ]);
+
         $request->validate([
             'name' => 'required',
             'category_id' => 'required|exists:categories,id',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'description' => 'required|text|min:0',
+            'description' => 'required|string|min:0',
             'stock' => 'required|integer|min:0',
-            'price' => 'required|numeric|min:0'
+            'price' => 'required|numeric|min:0',
+            'type' => 'required|in:sell,donation,recycled',
         ]);
 
         $imagePath = null;
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('products','public');
+            $imagePath = $request->file('image')->store('products', 'public');
         }
 
         Product::create([
@@ -55,10 +61,11 @@ class ProductController extends Controller
             'image' => $imagePath,
             'description' => $request->description,
             'stock' => $request->stock,
-            'price' => $request->price      
+            'price' => $request->price,
+            'type' => $request->type,
         ]);
 
-        return redirect()->route('products.index')->with('success', 'Produk berhasil ditambahkan');
+        return redirect()->route('admin.products.index')->with('success', 'Produk berhasil ditambahkan');
     }
 
     public function edit(Product $product)
@@ -67,18 +74,24 @@ class ProductController extends Controller
         return view('admin.products.edit', compact('product', 'categories'));
     }
 
-        /**
+    /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, Product $product)
     {
+        // Bersihkan titik dari harga sebelum validasi
+        $request->merge([
+            'price' => str_replace('.', '', $request->price),
+        ]);
+
         $request->validate([
             'name' => 'required',
             'category_id' => 'required|exists:categories,id',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'description' => 'required|text|min:0',
+            'description' => 'required|string|min:0',
             'stock' => 'required|integer|min:0',
-            'price' => 'required|numeric|min:0'
+            'price' => 'required|numeric|min:0',
+            'type' => 'required|in:sell,donation,recycled',
         ]);
 
         if ($request->hasFile('image')) {
@@ -92,12 +105,13 @@ class ProductController extends Controller
             'name' => $request->name,
             'category_id' => $request->category_id,
             'image' => $product->image,
-            'description' => $request ->description,
+            'description' => $request->description,
             'stock' => $request->stock,
-            'price' => $request->price
+            'price' => $request->price,
+            'type' => $request->type,
         ]);
 
-        return redirect()->route('products.index')->with('success', 'Produk berhasil diupdate');
+        return redirect()->route('admin.products.index')->with('success', 'Produk berhasil diupdate');
     }
 
     public function destroy(Product $product)
@@ -107,6 +121,6 @@ class ProductController extends Controller
         }
 
         $product->delete();
-        return redirect()->route('products.index')->with('success', 'Produk berhasil dihapus');
+        return redirect()->route('admin.products.index')->with('success', 'Produk berhasil dihapus');
     }
 }

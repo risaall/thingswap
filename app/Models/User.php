@@ -45,4 +45,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function donations()
+    {
+        return $this->hasMany(Product::class, 'user_id')->where('type', 'donation');
+    }
 }

@@ -1,46 +1,27 @@
-@extends('layouts.app')
+@extends('layouts.admin')
+
+@section('title', 'Edit Produk')
 
 @section('content')
-<div class="container">
-    <h2>Edit Produk</h2>
-    <form action="{{ route('products.update', $product->id) }}" method="POST" enctype="multipart/form-data">
+<div class="container mx-auto px-4 py-6">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6">Edit Produk</h2>
+
+    <form action="{{ route('admin.products.update', $product->id) }}" method="POST" enctype="multipart/form-data" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
         @csrf
         @method('PUT')
-        <div class="mb-3">
-            <label>Nama Produk</label>
-            <input type="text" name="name" value="{{ $product->name }}" class="form-control" required>
-        </div>
-        <div class="mb-3">
-            <label>Kategori</label>
-            <select name="category_id" class="form-control" required>
-                @foreach($categories as $category)
-                    <option value="{{ $category->id }}" {{ $product->category_id == $category->id ? 'selected' : '' }}>
-                        {{ $category->name }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-        <div class="mb-3">
-            <label>Stok</label>
-            <input type="number" name="stock" value="{{ $product->stock }}" class="form-control" required>
-        </div>
-        <div class="mb-3">
-            <label>Harga</label>
-            <input type="number" name="price" value="{{ $product->price }}" class="form-control" required>
-        </div>
-        <div class="mb-3">
-            <label>Gambar Produk</label><br>
-            @if($product->image)
-                <img src="{{ asset('storage/' . $product->image) }}" width="150" class="mb-2"><br>
-            @endif
-            <input type="file" name="image" class="form-control">
-        </div>
-        <div class="mb-3">
-    <label>Deskripsi</label>
-    <textarea name="description" class="form-control" rows="4"></textarea>
-</div>
-        <button type="submit" class="btn btn-primary">Update</button>
-        <a href="{{ route('products.index') }}" class="btn btn-secondary">Kembali</a>
+        @includeIf('admin.products.form', ['product' => $product])
     </form>
 </div>
+@endsection
+@section('scripts')
+<script>
+function formatHarga(input) {
+    let value = input.value.replace(/\D/g, '');
+    if (value) {
+        input.value = new Intl.NumberFormat('id-ID').format(value);
+    } else {
+        input.value = '';
+    }
+}
+</script>
 @endsection
