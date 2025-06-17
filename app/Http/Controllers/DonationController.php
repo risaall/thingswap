@@ -70,7 +70,7 @@ public function updateStatus($id, $status)
 {
     $donation = Donation::findOrFail($id);
 
-    if (!in_array($status, ['diterima', 'ditolak'])) {
+    if (!in_array($status, ['accepted', 'rejected'])) {
         return redirect()->back()->with('error', 'Status tidak valid.');
     }
 

@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdminDonationController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DonationController;
 use App\Http\Controllers\ProductController;
@@ -48,7 +49,7 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
 
     Route::patch('/donations/{donation}/status/{status}', [DonationController::class, 'updateStatus'])->name('admin.donations.updateStatus');
 
-           Route::resource('/donations', DonationController::class)->names([
+    Route::resource('/donations', AdminDonationController::class)->names([
     'index'   => 'admin.donations.index',
     'create'  => 'admin.donations.create',
     'store'   => 'admin.donations.store',
@@ -58,7 +59,7 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     'show'    => 'admin.donations.show', // opsional
 ]);
 
-        Route::resource('/products', ProductController::class)->names([
+    Route::resource('/products', ProductController::class)->names([
     'index'   => 'admin.products.index',
     'create'  => 'admin.products.create',
     'store'   => 'admin.products.store',
