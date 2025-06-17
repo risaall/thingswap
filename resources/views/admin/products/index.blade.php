@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Daftar Produk')
+@section('title', 'Produk')
 
 @section('head')
 <!-- Lightbox2 CSS -->
@@ -42,6 +42,23 @@
                         <h3 class="text-lg font-semibold text-gray-800">{{ $product->name }}</h3>
                         <p class="text-sm text-gray-600 mb-1">Kategori: <span class="font-medium">{{ $product->category->name ?? '-' }}</span></p>
                         <p class="text-sm text-gray-600 mb-1">Stok: <span class="font-medium">{{ $product->stock }}</span></p>
+                        <p class="text-sm text-gray-600 mb-1">Tujuan Barang:
+                            <span class="inline-block px-2 py-1 rounded text-white text-xs
+                                @if($product->type === 'sell') bg-blue-500
+                                @elseif($product->type === 'donation') bg-green-500
+                                @elseif($product->type === 'recycled') bg-yellow-500
+                                @else bg-gray-400 @endif">
+                                @if($product->type === 'sell')
+                                    Dijual
+                                @elseif($product->type === 'donation')
+                                    Donasi
+                                @elseif($product->type === 'recycled')
+                                    Didaur Ulang
+                                @else
+                                    Tidak Diketahui
+                                @endif
+                            </span>
+                        </p>
                         <p class="text-sm text-gray-800 mb-3">Harga: 
                             <span class="font-bold text-green-600">Rp {{ number_format((float) $product->price, 0, ',', '.') }}</span>
                         </p>

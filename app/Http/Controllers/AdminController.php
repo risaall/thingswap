@@ -12,44 +12,30 @@ class AdminController extends Controller
 {
     public function dashboard()
 {
-    try {
-        // Use select to limit fields and chunk for counts
-        $userCount = User::count();
-        $donorUserCount = User::whereHas('donations')->count();
-        $productCount = Product::where('type', 'sell')->count();
-        $donationCount = Donation::count();
-        $recycledCount = Product::where('type', 'recycled')->count();
-        $partnerCount = Partner::count();
+    $userCount = User::count();
+    
+    // Pilih salah satu sesuai kebutuhan:
+    // Opsi 1: Hitung user yang punya donation di tabel donations
+    $donorUserCount = User::whereHas('donations')->count();
+    
+    // Opsi 2: Hitung user yang punya product type donation
+    // $donorUserCount = User::whereHas('donationProducts')->count();
+    
+    $productCount = Product::where('type', 'sell')->count();
+    $donationCount = Donation::count(); // Dari tabel donations
+    // atau $donationCount = Product::where('type', 'donation')->count(); // Dari tabel products
+    
+    $recycledCount = Product::where('type', 'recycled')->count();
+    $partnerCount = Partner::count();
 
-        // Get paginated donations with minimal data
-        $donations = Donation::select([
-            'id', 
-            'name', 
-            'status', 
-            'condition', 
-            'user_id', 
-            'category_id'
-        ])
-        ->with([
-            'category:id,name',
-            'user:id,name'
-        ])
-        ->latest()
-        ->paginate(5); // Reduced to 5 items per page
-
-        return view('admin.dashboard', compact(
-            'userCount',
-            'donorUserCount',
-            'productCount', 
-            'donationCount',
-            'recycledCount',
-            'partnerCount',
-            'donations'
-        ));
-    } catch (\Exception $e) {
-        \Log::error('Dashboard error: ' . $e->getMessage());
-        return view('admin.dashboard')->with('error', 'Error loading dashboard data');
-    }
+    return view('admin.dashboard', compact(
+        'userCount',
+        'donorUserCount',
+        'productCount',
+        'donationCount',
+        'recycledCount',
+        'partnerCount'
+    ));
 }
 
     public function donations(Request $request) 

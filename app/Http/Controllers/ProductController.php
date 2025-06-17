@@ -9,9 +9,6 @@ use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $products = Product::with('category')->get();
@@ -20,7 +17,7 @@ class ProductController extends Controller
 
     public function showProducts()
     {
-        $products = Product::with('category')->latest()->get(); // tambah eager loading
+        $products = Product::with('category')->latest()->get();
         return view('user.produk', compact('products'));
     }
 
@@ -30,12 +27,9 @@ class ProductController extends Controller
         return view('admin.products.create', compact('categories'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        // Bersihkan titik dari harga sebelum validasi
+        // Bersihkan format harga
         $request->merge([
             'price' => str_replace('.', '', $request->price),
         ]);
@@ -55,7 +49,7 @@ class ProductController extends Controller
             $imagePath = $request->file('image')->store('products', 'public');
         }
 
-        Product::create([
+        $data = [
             'name' => $request->name,
             'category_id' => $request->category_id,
             'image' => $imagePath,
@@ -63,7 +57,14 @@ class ProductController extends Controller
             'stock' => $request->stock,
             'price' => $request->price,
             'type' => $request->type,
-        ]);
+        ];
+
+        // Tambahkan user_id jika kolomnya ada
+        if (\Schema::hasColumn('products', 'user_id')) {
+            $data['user_id'] = auth()->id();
+        }
+
+        Product::create($data);
 
         return redirect()->route('admin.products.index')->with('success', 'Produk berhasil ditambahkan');
     }
@@ -74,12 +75,8 @@ class ProductController extends Controller
         return view('admin.products.edit', compact('product', 'categories'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Product $product)
     {
-        // Bersihkan titik dari harga sebelum validasi
         $request->merge([
             'price' => str_replace('.', '', $request->price),
         ]);
@@ -121,6 +118,68 @@ class ProductController extends Controller
         }
 
         $product->delete();
+
         return redirect()->route('admin.products.index')->with('success', 'Produk berhasil dihapus');
     }
+
+    public function show($id)
+{
+    $product = Product::with('category')->findOrFail($id);
+    return view('user.products.show', compact('product'));
+}
+
+// API Methods
+
+public function storeApi(Request $request)
+{
+    try {
+        // Validasi termasuk image
+        $validated = $request->validate([
+            'name' => 'required',
+            'category_id' => 'required|exists:categories,id',
+            'description' => 'required|string|min:0',
+            'stock' => 'required|integer|min:0',
+            'price' => 'required|numeric|min:0',
+            'type' => 'required|in:sell,donation,recycled',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',  // validasi image opsional
+        ]);
+
+        // Jika ada file gambar, simpan ke storage public/products
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('products', 'public');
+        }
+
+        // Data produk yang akan disimpan
+        $productData = $validated;
+        $productData['user_id'] = 1; // atau sesuaikan user id-nya
+        $productData['image'] = $imagePath;
+
+        // Buat produk baru
+        $product = Product::create($productData);
+
+        return response()->json([
+            'message' => 'Produk berhasil ditambahkan via API',
+            'data' => $product
+        ], 201);
+
+    } catch (\Throwable $e) {
+        return response()->json([
+            'message' => 'Gagal menambahkan produk',
+            'error' => $e->getMessage(),
+        ], 500);
+    }
+}
+
+
+public function indexApi()
+{
+    $products = Product::with('category')->latest()->get();
+
+    return response()->json([
+        'message' => 'List produk berhasil diambil',
+        'data' => $products
+    ], 200);
+}
+
 }

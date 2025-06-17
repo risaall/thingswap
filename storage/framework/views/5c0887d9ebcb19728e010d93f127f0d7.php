@@ -15,37 +15,68 @@
         <h1 class="text-3xl font-bold text-gray-800 mb-8">Welcome Back, Admin!</h1>
 
         
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-            <div class="bg-white p-4 rounded-lg shadow">
-                <div class="flex items-center">
-                    <div class="flex-1">
-                        <h2 class="text-gray-600">Total Users</h2>
-                        <p class="text-2xl font-bold"><?php echo e($userCount); ?></p>
-                    </div>
-                    <i class="fas fa-users text-xl text-blue-500"></i>
-                </div>
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
+    <div class="bg-white p-4 rounded-lg shadow">
+        <div class="flex items-center">
+            <div class="flex-1">
+                <h2 class="text-gray-600 text-sm">Total Users</h2>
+                <p class="text-2xl font-bold"><?php echo e($userCount); ?></p>
             </div>
-
-            <div class="bg-white p-4 rounded-lg shadow">
-                <div class="flex items-center">
-                    <div class="flex-1">
-                        <h2 class="text-gray-600">Products</h2>
-                        <p class="text-2xl font-bold"><?php echo e($productCount); ?></p>
-                    </div>
-                    <i class="fas fa-box text-xl text-green-500"></i>
-                </div>
-            </div>
-
-            <div class="bg-white p-4 rounded-lg shadow">
-                <div class="flex items-center">
-                    <div class="flex-1">
-                        <h2 class="text-gray-600">Donations</h2>
-                        <p class="text-2xl font-bold"><?php echo e($donationCount); ?></p>
-                    </div>
-                    <i class="fas fa-gift text-xl text-purple-500"></i>
-                </div>
-            </div>
+            <i class="fas fa-users text-xl text-blue-500"></i>
         </div>
+    </div>
+
+    <div class="bg-white p-4 rounded-lg shadow">
+        <div class="flex items-center">
+            <div class="flex-1">
+                <h2 class="text-gray-600 text-sm">Donor Users</h2>
+                <p class="text-2xl font-bold"><?php echo e($donorUserCount); ?></p>
+            </div>
+            <i class="fas fa-user-check text-xl text-indigo-500"></i>
+        </div>
+    </div>
+
+    <div class="bg-white p-4 rounded-lg shadow">
+        <div class="flex items-center">
+            <div class="flex-1">
+                <h2 class="text-gray-600 text-sm">Sell Products</h2>
+                <p class="text-2xl font-bold"><?php echo e($productCount); ?></p>
+            </div>
+            <i class="fas fa-box text-xl text-green-500"></i>
+        </div>
+    </div>
+
+    <div class="bg-white p-4 rounded-lg shadow">
+        <div class="flex items-center">
+            <div class="flex-1">
+                <h2 class="text-gray-600 text-sm">Donations</h2>
+                <p class="text-2xl font-bold"><?php echo e($donationCount); ?></p>
+            </div>
+            <i class="fas fa-gift text-xl text-purple-500"></i>
+        </div>
+    </div>
+
+    <div class="bg-white p-4 rounded-lg shadow">
+        <div class="flex items-center">
+            <div class="flex-1">
+                <h2 class="text-gray-600 text-sm">Recycled Items</h2>
+                <p class="text-2xl font-bold"><?php echo e($recycledCount); ?></p>
+            </div>
+            <i class="fas fa-recycle text-xl text-yellow-500"></i>
+        </div>
+    </div>
+
+    <div class="bg-white p-4 rounded-lg shadow">
+        <div class="flex items-center">
+            <div class="flex-1">
+                <h2 class="text-gray-600 text-sm">Partners</h2>
+                <p class="text-2xl font-bold"><?php echo e($partnerCount); ?></p>
+            </div>
+            <i class="fas fa-handshake text-xl text-red-500"></i>
+        </div>
+    </div>
+</div>
+
 
         
         <?php if(isset($donations) && $donations->count() > 0): ?>

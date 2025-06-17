@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
+use Illuminate\Http\Request; // Pastikan baris ini ada
 
 class Kernel extends HttpKernel
 {
@@ -47,4 +48,23 @@ class Kernel extends HttpKernel
         // 🧩 Tambahkan custom middleware di sini
         'admin' => \App\Http\Middleware\AdminMiddleware::class,
     ];
+
+    /**
+     * Handle an incoming HTTP request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function handle($request)
+    {
+        // --- KODE LOGGING DITAMBAHKAN DI SINI ---
+        \Log::info('--- URL DITERIMA LARAVEL ---');
+        \Log::info('Full URL: ' . $request->fullUrl());
+        \Log::info('Path: ' . $request->path());
+        \Log::info('Request URI: ' . $request->getRequestUri());
+        \Log::info('--- END URL DITERIMA LARAVEL ---');
+        // --- AKHIR KODE LOGGING ---
+
+        return parent::handle($request);
+    }
 }

@@ -20,7 +20,7 @@
     <ul class="nav-list">
         <li><a href="{{ route('home') }}">Home</a></li>
         <li><a href="{{ route('about') }}" >About Us</a></li>
-        <li><a href="{{ route('product') }}">Products</a></li>
+        <li><a href="{{ route('user.products.index') }}">Products</a></li>
         <li><a href="{{ route('contribute') }}"  class="active">Contribute</a></li>
         <li><a href="{{ route('contact') }}">Contact</a></li>
         @auth
@@ -248,7 +248,7 @@
                     <ul>
                         <li><a href="{{ route('home') }}">Home</a></li>
                         <li><a href="{{ route('about') }}">About</a></li>
-                        <li><a href="{{ route('product') }}">Products</a></li>
+                        <li><a href="{{ route('user.products.index') }}">Products</a></li>
                         <li><a href="{{ route('contribute') }}">Contribute</a></li>
                     </ul>
                 </div>
@@ -288,7 +288,60 @@
         </div>
     </div>
 
-    <script src="tukar-barang.js"></script>
+    <script>
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('exchangeForm');
+    const modal = document.getElementById('successModal');
+    const closeBtn = modal.querySelector('.close');
+    const modalBtn = modal.querySelector('.modal-btn');
+
+    function openModal() {
+        modal.style.display = 'flex';
+    }
+
+    function closeModal() {
+        modal.style.display = 'none';
+    }
+
+    closeBtn.onclick = closeModal;
+    modalBtn.onclick = closeModal;
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            closeModal();
+        }
+    }
+
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(form);
+
+        fetch(form.action, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            },
+            body: formData
+        })
+        .then(async response => {
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(errorText || 'Terjadi kesalahan saat mengirim data.');
+            }
+            return response.json();
+        })
+        .then(data => {
+            openModal();
+            form.reset();
+        })
+        .catch(error => {
+            alert('Gagal mengirim donasi. Pastikan semua data valid.');
+            console.error(error);
+        });
+    });
+});
+</script>
+
 </body>
 </html>
 

@@ -1,95 +1,74 @@
-@extends('layouts.admin')
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@yield('title') | Admin Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 text-gray-800">
 
-@section('title', 'Moderasi Donasi')
+    <div class="flex min-h-screen">
 
-@section('content')
-    <div class="mb-6">
-        <h2 class="text-2xl font-bold text-gray-800">📬 Moderasi Donasi</h2>
+        {{-- Sidebar --}}
+        <aside class="w-64 bg-gray-900 text-white flex-shrink-0 shadow-md">
+            <div class="p-6">
+                <h1 class="text-2xl font-bold flex items-center gap-2">
+                    <i class="fas fa-cogs"></i> Admin Panel
+                </h1>
+            </div>
+            <nav class="mt-6">
+                <a href="{{ route('admin.dashboard') }}"
+                   class="block py-2.5 px-6 hover:bg-green-600 rounded transition {{ request()->routeIs('admin.dashboard') ? 'bg-green-700' : '' }}">
+                    <i class="fas fa-home mr-2"></i> Dashboard
+                </a>
+                <a href="{{ route('admin.categories.index') }}"
+                   class="block py-2.5 px-6 hover:bg-green-600 rounded transition {{ request()->routeIs('admin.categories.*') ? 'bg-green-700' : '' }}">
+                    <i class="fas fa-tags mr-2"></i> Kategori
+                </a>
+                <a href="{{ route('admin.products.index') }}"
+                   class="block py-2.5 px-6 hover:bg-green-600 rounded transition {{ request()->routeIs('admin.products.*') ? 'bg-green-700' : '' }}">
+                    <i class="fas fa-box mr-2"></i> Produk
+                </a>
+                <a href="{{ route('admin.donations.index') }}"
+                   class="block py-2.5 px-6 hover:bg-green-600 rounded transition {{ request()->routeIs('admin.donations.*') ? 'bg-green-700' : '' }}">
+                    <i class="fas fa-gift mr-2"></i> Donasi
+                </a>
+                <a href="{{ route('admin.users.index') }}"
+                   class="block py-2.5 px-6 hover:bg-green-600 rounded transition {{ request()->routeIs('admin.users.*') ? 'bg-green-700' : '' }}">
+                    <i class="fas fa-users mr-2"></i> Pengguna
+                </a>
+                <a href="{{ route('admin.partners.index') }}"
+                   class="block py-2.5 px-6 hover:bg-green-600 rounded transition {{ request()->routeIs('admin.partners.*') ? 'bg-green-700' : '' }}">
+                    <i class="fas fa-handshake mr-2"></i> Mitra
+                </a>
+                <a href="{{ route('logout') }}"
+                   onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                   class="block py-2.5 px-6 hover:bg-red-600 rounded transition">
+                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                </a>
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
+                    @csrf
+                </form>
+            </nav>
+        </aside>
+
+        {{-- Main Content --}}
+        <main class="flex-1 p-8">
+            <div class="mb-6 border-b pb-4">
+                <h2 class="text-2xl font-bold">@yield('title')</h2>
+            </div>
+
+            @if (session('success'))
+                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            @yield('content')
+        </main>
     </div>
 
-    {{-- Filter --}}
-    <form method="GET" action="{{ route('admin.donations.index') }}" class="flex items-center space-x-2 mb-6">
-        <label for="status" class="text-sm text-gray-700">Filter Status</label>
-        <select name="status" id="status" class="border-gray-300 rounded px-3 py-2 text-sm">
-            <option value="">-- Semua Status --</option>
-            <option value="baru" {{ request('status') === 'baru' ? 'selected' : '' }}>Baru</option>
-            <option value="diterima" {{ request('status') === 'diterima' ? 'selected' : '' }}>Diterima</option>
-            <option value="ditolak" {{ request('status') === 'ditolak' ? 'selected' : '' }}>Ditolak</option>
-        </select>
-        <button type="submit" class="px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">
-            <i class="fas fa-search mr-1"></i> Filter
-        </button>
-    </form>
-
-    {{-- Table --}}
-    <div class="overflow-x-auto bg-white rounded shadow">
-        <table class="min-w-full table-auto text-sm text-left text-gray-700">
-            <thead class="bg-gray-100 text-gray-700 font-semibold">
-                <tr>
-                    <th class="px-4 py-3 border-b">#</th>
-                    <th class="px-4 py-3 border-b">Barang</th>
-                    <th class="px-4 py-3 border-b">Kategori</th>
-                    <th class="px-4 py-3 border-b">Kondisi</th>
-                    <th class="px-4 py-3 border-b">Deskripsi</th>
-                    <th class="px-4 py-3 border-b">Foto</th>
-                    <th class="px-4 py-3 border-b">Donatur</th>
-                    <th class="px-4 py-3 border-b">Kontak</th>
-                    <th class="px-4 py-3 border-b">Status</th>
-                    <th class="px-4 py-3 border-b text-center">Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse ($donations as $index => $donation)
-                    <tr class="hover:bg-gray-50">
-                        <td class="px-4 py-3 border-b">{{ $index + 1 }}</td>
-                        <td class="px-4 py-3 border-b">{{ $donation->name }}</td>
-                        <td class="px-4 py-3 border-b">{{ $donation->category->name ?? '-' }}</td>
-                        <td class="px-4 py-3 border-b">{{ ucfirst($donation->condition) }}</td>
-                        <td class="px-4 py-3 border-b">{{ $donation->description }}</td>
-                        <td class="px-4 py-3 border-b">
-                            @if ($donation->photo)
-                                <img src="{{ asset('storage/' . $donation->photo) }}" alt="Foto Barang" class="w-16 h-16 object-cover rounded">
-                            @else
-                                <span class="text-gray-400 italic">Tidak ada</span>
-                            @endif
-                        </td>
-                        <td class="px-4 py-3 border-b">{{ $donation->user->name ?? '-' }}</td>
-                        <td class="px-4 py-3 border-b">
-                            <div class="flex flex-col">
-                                <span class="flex items-center"><i class="fas fa-phone mr-1 text-pink-600"></i> {{ $donation->phone ?? '-' }}</span>
-                                <span class="flex items-center"><i class="fas fa-envelope mr-1 text-purple-600"></i> {{ $donation->email ?? '-' }}</span>
-                            </div>
-                        </td>
-                        <td class="px-4 py-3 border-b capitalize">{{ $donation->status }}</td>
-                        <td class="px-4 py-3 border-b text-center">
-                            @if($donation->status === 'baru')
-                                <div class="flex items-center justify-center space-x-2">
-                                    <form action="{{ route('admin.donations.updateStatus', ['donation' => $donation->id, 'status' => 'diterima']) }}" method="POST">
-                                        @csrf
-                                        @method('PATCH')
-                                        <button type="submit" class="bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded text-xs shadow">
-                                            <i class="fas fa-check mr-1"></i> Terima
-                                        </button>
-                                    </form>
-                                    <form action="{{ route('admin.donations.updateStatus', ['donation' => $donation->id, 'status' => 'ditolak']) }}" method="POST">
-                                        @csrf
-                                        @method('PATCH')
-                                        <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs shadow">
-                                            <i class="fas fa-times mr-1"></i> Tolak
-                                        </button>
-                                    </form>
-                                </div>
-                            @else
-                                <span class="text-gray-500 text-sm italic">-</span>
-                            @endif
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="10" class="text-center py-4 text-gray-500">Belum ada donasi</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
-@endsection
+</body>
+</html>

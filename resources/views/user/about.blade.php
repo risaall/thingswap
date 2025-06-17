@@ -20,7 +20,7 @@
     <ul class="nav-list">
         <li><a href="{{ route('home') }}">Home</a></li>
         <li><a href="{{ route('about') }}" class="active">About Us</a></li>
-        <li><a href="{{ route('product') }}">Products</a></li>
+        <li><a href="{{ route('user.products.index') }}">Products</a></li>
         <li><a href="{{ route('contribute') }}">Contribute</a></li>
         <li><a href="{{ route('contact') }}">Contact</a></li>
         @auth
@@ -175,7 +175,7 @@
                     <ul>
                         <li><a href="{{ route('home') }}">Home</a></li>
                         <li><a href="{{ route('about') }}">About</a></li>
-                        <li><a href="{{ route('product') }}">Products</a></li>
+                        <li><a href="{{ route('user.products.index') }}">Products</a></li>
                         <li><a href="{{ route('contribute') }}">Contribute</a></li>
                     </ul>
                 </div>

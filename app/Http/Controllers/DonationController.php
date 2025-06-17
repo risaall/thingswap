@@ -48,36 +48,8 @@ class DonationController extends Controller
             'user_id' => auth()->id(), // ⬅ Tambahkan ini
         ]);
 
-        return redirect()->back()->with('success', 'Donation berhasil dikirim!');
+        return response()->json(['message' => 'Donasi berhasil dikirim.']);
+
     }
-
-    public function index(Request $request)
-{
-    $status = $request->query('status');
-    $query = Donation::with('category', 'user');
-
-    if ($status) {
-        $query->where('status', $status);
-    }
-
-    $donations = $query->paginate(10); // ✅ gunakan pagination
-
-    return view('admin.donations.index', compact('donations'));
 }
-
-
-public function updateStatus($id, $status)
-{
-    $donation = Donation::findOrFail($id);
-
-    if (!in_array($status, ['accepted', 'rejected'])) {
-        return redirect()->back()->with('error', 'Status tidak valid.');
-    }
-
-    $donation->status = $status;
-    $donation->save();
-
-    return redirect()->route('admin.donations.index')->with('success', 'Status donasi berhasil diperbarui.');
-}
-
-}
+    

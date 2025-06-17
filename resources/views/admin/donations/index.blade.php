@@ -1,17 +1,20 @@
 @extends('layouts.admin')
 
-@section('title', 'Moderasi Donasi')
+@section('title', 'Donasi')
 
 @section('content')
 <div class="bg-white p-6 rounded shadow">
-    <div class="mb-6">
+    <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
-            <i class="fas fa-gift text-green-600"></i> Moderasi Donasi
+            <i class="fas fa-gift text-green-600"></i> Daftar Donasi
         </h2>
+        <a href="{{ route('admin.donations.create') }}" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 text-sm">
+            <i class="fas fa-plus mr-1"></i> Tambah Donasi
+        </a>
     </div>
 
-    {{-- Filter --}}
-    <form method="GET" action="{{ route('admin.donations.index') }}" class="mb-4 flex items-center space-x-4">
+    {{-- Filter dan Pencarian --}}
+    <form method="GET" action="{{ route('admin.donations.index') }}" class="mb-4 flex flex-wrap items-end gap-4">
         <div>
             <label for="status" class="text-sm text-gray-700">Filter Status</label>
             <select name="status" id="status" class="mt-1 px-3 py-2 border rounded text-sm text-gray-700">
@@ -21,8 +24,12 @@
                 <option value="rejected" {{ request('status') === 'rejected' ? 'selected' : '' }}>Ditolak</option>
             </select>
         </div>
-        <button type="submit" class="mt-5 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 text-sm">
-            <i class="fas fa-filter mr-1"></i> Filter
+        <div class="flex flex-col">
+            <label for="search" class="text-sm text-gray-700">Pencarian</label>
+            <input type="text" name="search" id="search" value="{{ request('search') }}" placeholder="Cari barang atau donatur..." class="px-3 py-2 border rounded text-sm text-gray-700">
+        </div>
+        <button type="submit" class="h-fit px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 text-sm">
+            <i class="fas fa-filter mr-1"></i> Terapkan
         </button>
     </form>
 
@@ -84,27 +91,35 @@
                         </td>
                         <td class="px-4 py-3 border-b text-center">
                             @if($donation->status === 'pending')
-                                <div class="flex items-center justify-center space-x-2">
-                                    <form action="{{ route('admin.donations.updateStatus', ['donation' => $donation->id, 'status' => 'accepted']) }}" method="POST">
-                                    @csrf
-                                    @method('PATCH')
-                                    
+                                <div class="flex items-center justify-center space-x-2 mb-2">
+                                    <form action="{{ route('admin.donations.updateStatus', ['donation' => $donation->id]) }}" method="POST">
+                                        @csrf @method('PATCH')
+                                        <input type="hidden" name="status" value="accepted">
                                         <button class="px-2 py-1 bg-green-600 text-white rounded text-xs hover:bg-green-700">
                                             <i class="fas fa-check"></i>
                                         </button>
                                     </form>
-                                    <form action="{{ route('admin.donations.updateStatus', ['donation' => $donation->id, 'status' => 'rejected']) }}" method="POST">
-                                    @csrf
-                                        @method('PATCH')
-                                    
+                                    <form action="{{ route('admin.donations.updateStatus', ['donation' => $donation->id]) }}" method="POST">
+                                        @csrf @method('PATCH')
+                                        <input type="hidden" name="status" value="rejected">
                                         <button class="px-2 py-1 bg-red-600 text-white rounded text-xs hover:bg-red-700">
                                             <i class="fas fa-times"></i>
                                         </button>
                                     </form>
                                 </div>
-                            @else
-                                <span class="text-gray-500 text-xs italic">-</span>
                             @endif
+                            <div class="flex justify-center space-x-2">
+                                <a href="{{ route('admin.donations.edit', $donation->id) }}" class="px-2 py-1 bg-blue-500 text-white rounded text-xs hover:bg-blue-600">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <form action="{{ route('admin.donations.destroy', $donation->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus donasi ini?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="px-2 py-1 bg-gray-600 text-white rounded text-xs hover:bg-gray-700">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                 @empty
@@ -114,11 +129,6 @@
                 @endforelse
             </tbody>
         </table>
-    </div>
-
-    {{-- Pagination --}}
-    <div class="mt-6">
-        {{ $donations->withQueryString()->links() }}
     </div>
 </div>
 @endsection

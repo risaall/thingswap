@@ -11,6 +11,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PartnerController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ProductUserController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -26,9 +27,7 @@ Route::get('/about', function () {
     return view('user.about');
 })->name('about');
 
-Route::get('/product', function () {
-    return view('user.product');
-})->name('product');
+
 
 
 
@@ -39,15 +38,18 @@ Route::get('/contact', function () {
 
 
 Route::get('/contribute', [DonationController::class, 'create'])->name('contribute');
-Route::post('/donation', [DonationController::class, 'store'])->name('donation.store');
+Route::post('/contribute', [DonationController::class, 'store'])->name('donation.store');
+
+Route::get('/product', [ProductUserController::class, 'index'])->name('user.products.index');
+Route::get('/product/{id}', [ProductUserController::class, 'show'])->name('user.products.show');
 
 
 
-
+// Admin Section
 Route::middleware(['auth'])->prefix('admin')->group(function () {
-    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('/', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
-    Route::patch('/donations/{donation}/status/{status}', [DonationController::class, 'updateStatus'])->name('admin.donations.updateStatus');
+    Route::put('/donations/{donation}/status', [AdminDonationController::class, 'updateStatus'])->name('admin.donations.updateStatus');
 
     Route::resource('/donations', AdminDonationController::class)->names([
     'index'   => 'admin.donations.index',

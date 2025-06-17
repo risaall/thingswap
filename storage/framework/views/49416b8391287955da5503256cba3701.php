@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EcondMart - Second Life, Smart Buy!</title>
-    <link rel="stylesheet" href="{{ asset('css/home.css') }}">
+    <link rel="stylesheet" href="<?php echo e(asset('css/home.css')); ?>">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
@@ -14,25 +14,25 @@
     <header class="header">
       <div class="container">
           <div class="logo">
-              <h1><a href="{{ route('home') }}">EcondMart</a></h1>
+              <h1><a href="<?php echo e(route('home')); ?>">EcondMart</a></h1>
           </div>
           <nav class="nav">
     <ul class="nav-list">
-        <li><a href="{{ route('home') }}" class="active">Home</a></li>
-        <li><a href="{{ route('about') }}" >About Us</a></li>
-        <li><a href="{{ route('user.products.index') }}">Products</a></li>
-        <li><a href="{{ route('contribute') }}">Contribute</a></li>
-        <li><a href="{{ route('contact') }}">Contact</a></li>
-        @auth
+        <li><a href="<?php echo e(route('home')); ?>" class="active">Home</a></li>
+        <li><a href="<?php echo e(route('about')); ?>" >About Us</a></li>
+        <li><a href="<?php echo e(route('user.products.index')); ?>">Products</a></li>
+        <li><a href="<?php echo e(route('contribute')); ?>">Contribute</a></li>
+        <li><a href="<?php echo e(route('contact')); ?>">Contact</a></li>
+        <?php if(auth()->guard()->check()): ?>
         <li>
-            <form method="POST" action="{{ route('logout') }}" class="logout-form">
-                @csrf
+            <form method="POST" action="<?php echo e(route('logout')); ?>" class="logout-form">
+                <?php echo csrf_field(); ?>
                 <button type="submit" class="logout-button">
                     <i class="fas fa-sign-out-alt"></i> Logout
                 </button>
             </form>
         </li>
-        @endauth
+        <?php endif; ?>
     </ul>
 </nav>
       </div>
@@ -198,10 +198,10 @@
                 <div class="footer-section">
                     <h4>Layanan</h4>
                     <ul>
-                        <li><a href="{{ route('home') }}">Home</a></li>
-                        <li><a href="{{ route('about') }}">About</a></li>
-                        <li><a href="{{ route('user.products.index') }}">Products</a></li>
-                        <li><a href="{{ route('contribute') }}">Contribute</a></li>
+                        <li><a href="<?php echo e(route('home')); ?>">Home</a></li>
+                        <li><a href="<?php echo e(route('about')); ?>">About</a></li>
+                        <li><a href="<?php echo e(route('user.products.index')); ?>">Products</a></li>
+                        <li><a href="<?php echo e(route('contribute')); ?>">Contribute</a></li>
                     </ul>
                 </div>
                 
@@ -226,9 +226,10 @@
             </div>
         </div>
     </footer>
-    <script src="{{ asset('js/custom.js') }}"></script>
+    <script src="<?php echo e(asset('js/custom.js')); ?>"></script>
 
 </body>
 </html>
 
 
+<?php /**PATH C:\xampp\htdocs\thingswap\resources\views/user/home.blade.php ENDPATH**/ ?>
